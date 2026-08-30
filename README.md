@@ -1,3 +1,7 @@
+
+# site preview
+https://xandremicua.vercel.app/
+
 # terminal-portfolio
 
 A dark, single-accent, terminal-styled developer portfolio for Next.js.
