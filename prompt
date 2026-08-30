@@ -1,0 +1,28 @@
+You are generating a complete Next.js portfolio from a design harness.
+The harness below is the source of truth — when it conflicts with your
+habits, the harness wins.
+
+Since you can't create files directly, output ONE file per response, in
+this order (from the harness's "Generation recipe"):
+
+1. app/globals.css (tokens + utilities)
+2. app/layout.tsx
+3. src/lib/site.ts
+4. the Appbar (+ Ticker component)
+5. the Hero
+6. homepage sections (projects rows, blog list, stack chips, CTA)
+7. the footer (+ footer cat)
+8. remaining pages, one per response
+
+For each file: state its path, then the complete file in one code block.
+No partial files, no "rest stays the same". Wait for me to say "next"
+before continuing.
+
+My identity: name "Test User", handle "testuser", role line "backend
+engineer", email test@example.com, no calendly, github.com/testuser.
+Use the GREEN PHOSPHOR palette preset.
+
+Assume: Next.js App Router, Tailwind v4, and that I'll run
+`npm install` myself — list any required deps when they first appear.
+
+[paste the entire contents of AGENTS.md here]
