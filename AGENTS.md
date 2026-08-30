@@ -204,9 +204,10 @@ shell: `ls: no matches for --x — clear filters`.
   raised block; description sans; stack chips `border-border px-2 py-0.5
   text-[11px] text-accent-muted`; hover `translate-x-1` +
   `border-secondary-border`. Year renders only if present (no dangling ·).
-- Blog rows: `{slug}.md` titles, dashed dividers (`border-dashed`), ISO
-  dates (build `YYYY-MM` manually — never toLocaleDateString), meta line
-  shows tags as flags.
+- **Dates in lists: build `${year}-${month}` by hand from the Date.**
+  NEVER `Date.toString()`, `toLocaleDateString()`, or concatenating date
+  parts that can be undefined — this produces
+  `Thu Jan 08 2026 08:00:00 GMT+0800 (...)-undefined`.
 - Solid borders = projects; dashed = blog/trading lists. Keep the split.
 
 ### Window chrome (all screenshots)
@@ -237,7 +238,12 @@ Full-bleed strip under the nav row inside the fixed header (outside the
 max-w wrapper). `.ticker-track`: width max-content, content rendered
 TWICE, `animation: tick 32s linear infinite` to translateX(-50%), pause
 on hover. `aria-hidden` (facts repeat elsewhere). ▲ in positive for
-improving stats only.
+improving stats only.  Live stats (last push, public repo count) fetch server-side in
+`layout.tsx` via `lib/github.ts` and pass down as props; 1h revalidate.
+Use `/repos?sort=pushed&per_page=1` for last-push date — the
+`/events/public` feed returns empty for some accounts. Live entries render
+ONLY when fetched successfully; never show placeholders or error text in
+the ticker.
 
 ### Buttons (components/button.tsx — API is stable, do not change props)
 primary = accent outline → fills accent + glow on hover; secondary =
@@ -265,6 +271,36 @@ at edges on the idle frame, `image-rendering: pixelated`,
 `pointer-events-none` track, reduced-motion = sitting cat at right.
 ONE cat. Do not add more mascots.
 
+### Interactive shell (the site's signature feature)
+
+Two files: `shell-commands.ts` (pure logic, no React — each command
+returns `{ lines, navigate?, clear?, close?, theme? }`) and `shell.tsx`
+(the panel). Opens three ways: `/` hotkey when not typing, a fixed corner
+button, and any component dispatching `new Event("open-shell")` — the
+hero prompt uses this. Panel uses the same window chrome as project
+cards, bottom-aligned on mobile so the keyboard doesn't cover it.
+
+Input has ghost-text tab completion, arrow-key history, and a caret
+rendered inside the ghost span so it trails the typed text. Commands that
+name a section print output, then `router.push` after ~450ms.
+`theme <amber|green|blue>` applies a palette from `lib/palettes.ts` by
+setting CSS custom properties on `:root` — ephemeral, no persistence, and
+NO visible theme toggle (see rule 5).
+
+The command set and easter eggs should be the fork's own. Copying
+`sudo hire xandre` is copying someone else's joke.
+
+### Projects grid format follows the work
+Window-chrome cards when projects have real screenshots (client apps,
+UIs); `ls`-style text rows when they don't (libraries, services, CLIs).
+Never use placeholder screenshots to force the card format.
+
+### 404 (app/not-found.tsx)
+Client component. Prints `$ cd {pathname}` then
+`bash: cd: {pathname}: No such file or directory`, a tree of real routes
+from SIDEBAR_MENU, `cd ~` plus an "open a shell" button, and
+`process exited 127`.
+
 ## Consistency invariants (check before every commit)
 
 - Numbers agree site-wide: if the ticker says "30+ projects", no page says
@@ -276,6 +312,8 @@ ONE cat. Do not add more mascots.
   (never chain `grep || npm uninstall` — a failed grep false-triggers it).
 - `npx tsc --noEmit` and `npm run build` pass.
 - tsconfig.tsbuildinfo is gitignored.
+
+
 
 ## Generation recipe (for agents building a fresh copy)
 
@@ -305,9 +343,8 @@ ONE cat. Do not add more mascots.
 ## Known deliberate omissions
 
 - `/recommendations` not yet themed (last `Title` + `neutral-` user).
-- OG image still old-theme; regenerate to match (dark card, accent
-  headline, handle).
-- Approved for later, nothing started: interactive typeable prompt
-  (`help`, `projects`, easter eggs) as v1.1; live ticker data via GitHub
-  API (last commit, repo count). Nothing else should be added without a
-  fight.
+- OG image still old-theme (a photo); regenerate to match if desired —
+  deliberately deprioritized.
+- Nothing else should be added without a fight.
+
+
