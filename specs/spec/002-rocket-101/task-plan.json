@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "status": "ready",
+  "goal": "Add the testimonials page to the terminal-portfolio harness: specify the `/recommendations` route (command header, data file, list-row pattern, nav item, recipe step) in AGENTS.md so any agent generating a portfolio from this harness produces a themed testimonials page, and resolve the harness's own 'recommendations not yet themed' omission.",
+  "scope": {
+    "in": [
+      "AGENTS.md: a `Recommendations` entry in the pattern language (command header, row format, borders, fonts, source link, empty state, reduced-motion, accessibility).",
+      "AGENTS.md: identity-data bullet for `(features)/recommendations/recommendations-data.ts` with its typed fields and truthfulness rule.",
+      "AGENTS.md: command-per-surface list, `SIDEBAR_MENU` nav item, interactive-shell section list, generation recipe step, and removal of the `/recommendations not yet themed` omission.",
+      "README.md: quick-start table row for the data file and a one-line feature bullet, using the same `recommendations` naming."
+    ],
+    "out": [
+      "Generating the Next.js reference implementation (no `package.json`, `src/`, or app code exists on this branch; README states the reference implementation is 'coming'). The request 'add testimonial page' is scoped to the harness, which is the only artifact the repo ships.",
+      "A homepage testimonials section — recipe step 6 fixes the homepage to Hero → projects → blog → stack → CTA; adding a section violates 'the design's power is restraint'.",
+      "Headshots, company logos, star ratings, carousels or autoplay — rules 2, 8, 9.",
+      "Fetching recommendations live from LinkedIn or any API — entries are static data like every other identity file.",
+      "Changes to the `prompt` file — its step 8 ('remaining pages, one per response') already covers the new page.",
+      "Any new design token, color, font or component primitive."
+    ]
+  },
+  "codebaseEvidence": [
+    { "path": "AGENTS.md", "reason": "Source of truth for the design system. 'Known deliberate omissions' lists `/recommendations` as the last unthemed route; the pattern language, identity-data list, command-per-surface list, recipe and consistency invariants are the sections the new page must be added to. Its non-negotiable rules (one accent, no logos/icon grids, mono vs sans, sharp corners, dashed = text lists, reduced-motion, true claims only) fully constrain the page." },
+    { "path": "README.md", "reason": "States the repo is 'harness-first' with no reference code; lists the identity-data files a user edits (table under Quick start) and the feature bullets — both must mention the new data file/page to stay consistent with AGENTS.md." },
+    { "path": "prompt", "reason": "Generation prompt; step 8 'remaining pages, one per response' already covers additional routes, so no edit is needed." },
+    { "path": "CLAUDE-import.md", "reason": "Contains only `@AGENTS.md`; confirms AGENTS.md is the single file to edit (never two places)." }
+  ],
+  "decisions": [
+    {
+      "id": "D001",
+      "summary": "Interpret 'add testimonial page' as adding the page's pattern to the harness (AGENTS.md + README), not as writing Next.js code. The repository tracks only AGENTS.md, CLAUDE-import.md, README.md and prompt; there is no app to add a route to. The live reference site (xandremicua.vercel.app/recommendations, fetched 2026-11-03) shows a 'Coming Soon' stub, confirming the page is undesigned rather than merely unthemed.",
+      "evidence": ["README.md (Status: harness-first; 'Reference implementation … coming')", "git ls-files output: 4 tracked files, no package.json", "AGENTS.md › Known deliberate omissions"]
+    },
+    {
+      "id": "D002",
+      "summary": "Route and vocabulary are `/recommendations` (nav label `recommendations`, data file `recommendations-data.ts`, type `Recommendation`), not `/testimonials`. The harness, the reference site's nav and the omission note already use `recommendations`; a second word would create exactly the naming drift the consistency invariants forbid. README may use 'testimonials' once as a plain-English synonym in prose.",
+      "evidence": ["AGENTS.md › Known deliberate omissions (`/recommendations`)", "Reference site nav: Projects, Blog, Stack, Experience, Trading, Recommendations", "AGENTS.md › Consistency invariants (naming exact)"]
+    },
+    {
+      "id": "D003",
+      "summary": "Page idiom: command header `cat recommendations/*.md`; each entry is a dashed-bordered raised block (dashed = text lists, solid = projects) with a mono attribution line `{name}  {role} @ {company}` in text-primary/text-secondary, a hand-built `yyyy-mm` date right-aligned in text-secondary, the quote in `font-sans` text-primary, and an optional source rendered as a `# via {label}` comment-style external link (accent-muted `#`, link accent-muted → accent). No images, no ratings, no carousel. Empty state: `cat: recommendations/*.md: No such file or directory`.",
+      "evidence": ["AGENTS.md › The pattern language › Command header, List rows, Markdown (# comments in accent-muted), Filter pills (empty states speak shell)", "AGENTS.md rules 1, 2, 3, 4, 8, 9"]
+    },
+    {
+      "id": "D004",
+      "summary": "Truthfulness rule for the data file: entries must be real, quoted verbatim, and published with the author's permission; `source` links to where the recommendation is publicly visible when one exists. Mirrors the ticker's 'only TRUE claims' rule.",
+      "evidence": ["AGENTS.md › Identity data › Ticker STATS (TRUE claims)", "AGENTS.md rule 10 (copy is part of the design)"]
+    },
+    {
+      "id": "D005",
+      "summary": "No new homepage section and no ticker stat; the page is reached via the nav item (last, after `trading`), the 404 route tree (derived from SIDEBAR_MENU automatically) and the interactive shell's section commands.",
+      "evidence": ["AGENTS.md › Generation recipe step 6 (fixed homepage order)", "AGENTS.md › 404 (tree of real routes from SIDEBAR_MENU)", "AGENTS.md › Interactive shell (commands that name a section router.push)"]
+    },
+    {
+      "id": "D006",
+      "summary": "No ADR is authored: the repository has no docs/adr directory or accepted ADRs, only an unused `.specify/templates/adr-template.md`; AGENTS.md itself is where design decisions are recorded.",
+      "evidence": [".specify/templates (templates only, no constitution or ADRs)"]
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "Q001",
+      "question": "Confirm the interpretation in D001: the deliverable is the harness pattern (AGENTS.md + README), because this branch has no application code. If you instead want the full Next.js reference implementation generated with a testimonials page, that is a separate, much larger request requiring identity data (name, handle, bio, links, palette) and should be started as its own feature.",
+      "blocking": false
+    },
+    {
+      "id": "Q002",
+      "question": "D002 keeps the route name `/recommendations` for continuity with the harness and the reference site. Say so at handoff if you prefer `/testimonials` everywhere instead; the plan then applies with the word swapped (route, nav label, data file, type, command header).",
+      "blocking": false
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T001",
+      "title": "Specify the recommendations page in AGENTS.md",
+      "description": "Add the `/recommendations` page to the harness so it is generated and themed like every other route. Edits, all inside AGENTS.md: (1) under 'Identity data', add a bullet for `(features)/recommendations/recommendations-data.ts` exporting `Recommendation[]` with fields `{ name, role, company?, quote, date?: \"yyyy-mm\", source?: { label, url } }`, newest first, and the D004 truthfulness rule; (2) in 'Command header › Commands per surface', add `recommendations \\`cat recommendations/*.md\\``; (3) add a new '### Recommendations = cat quotes' subsection to 'The pattern language' implementing D003 — dashed-bordered raised block per entry, mono attribution line, hand-built `yyyy-mm` date (never Date.toString), `font-sans` quote, `# via {label}` external source link with `rel=\"noopener noreferrer\"` and an `aria-label`, explicit 'no headshots, no logos, no ratings, no carousel, no truncation of quotes' line, shell-speaking empty state, static render under reduced motion (Container fade-up only); (4) in 'Appbar `SIDEBAR_MENU`' identity bullet and recipe step 4, note `recommendations` as the last nav item after `trading`; (5) in 'Interactive shell', list `recommendations` among section commands; (6) add a recipe step after step 7 ('Pages per the pattern language') naming the recommendations page, or extend step 7's sentence — one mention, no duplication; (7) delete the `/recommendations not yet themed` line from 'Known deliberate omissions' (keep the OG-image line and the closing sentence). Do not change the token block, rules 1–10, or any existing pattern's wording.",
+      "paths": ["AGENTS.md"],
+      "dependsOn": [],
+      "acceptanceCriteria": [
+        "AC-T001-1: `grep -n 'cat recommendations/\\*.md' AGENTS.md` matches at least twice (commands-per-surface list and the new pattern subsection).",
+        "AC-T001-2: `grep -n 'recommendations-data.ts' AGENTS.md` matches in the Identity data section and the bullet documents fields name, role, company?, quote, date? (\"yyyy-mm\"), source? { label, url } and the real/verbatim/permissioned rule.",
+        "AC-T001-3: AGENTS.md contains a `### Recommendations` subsection inside 'The pattern language' that names: dashed border, raised background token (`secondary-background`), mono attribution, `font-sans` quote, `yyyy-mm` date built by hand, `# via {label}` source link in accent-muted → accent, empty state text `cat: recommendations/*.md: No such file or directory`, and an explicit prohibition on headshots/logos/ratings/carousels.",
+        "AC-T001-4: `grep -n 'not yet themed' AGENTS.md` returns no matches; the OG-image omission and 'Nothing else should be added without a fight.' remain.",
+        "AC-T001-5: `grep -n '/testimonials' AGENTS.md` returns no matches (naming per D002).",
+        "AC-T001-6: Every color named in the new subsection is an existing token (`background`, `secondary-background`, `border`, `secondary-border`, `text-primary`, `text-secondary`, `accent`, `accent-muted`); `grep -n 'neutral-\\|#[0-9a-fA-F]\\{6\\}' ` over the new subsection's lines returns nothing new, and no `rounded-*` appears in it.",
+        "AC-T001-7: `git diff --stat` for the task touches only AGENTS.md, and `git diff` shows no modified lines inside the `:root` token block or the 'Non-negotiable rules' list."
+      ]
+    },
+    {
+      "id": "T002",
+      "title": "Reflect the recommendations page in README.md",
+      "description": "Keep README consistent with the harness: add a row to the Quick-start table `| src/app/(features)/recommendations/recommendations-data.ts | Recommendations (testimonials — real, verbatim quotes) |` placed after the timeline-data row, and add one Features bullet in the README's existing voice (e.g. 'Recommendations as `cat recommendations/*.md` — dashed quote blocks, attribution in mono, no headshots'). Use the word `recommendations` for route/file/nav; 'testimonials' may appear once as the plain-English synonym. No other README changes.",
+      "paths": ["README.md"],
+      "dependsOn": ["T001"],
+      "acceptanceCriteria": [
+        "AC-T002-1: `grep -n 'recommendations-data.ts' README.md` matches exactly one table row, located after the `timeline-data.ts` row.",
+        "AC-T002-2: `grep -n 'cat recommendations' README.md` matches one Features bullet.",
+        "AC-T002-3: `grep -n '/testimonials' README.md` returns no matches.",
+        "AC-T002-4: `git diff --stat` for the task touches only README.md."
+      ]
+    }
+  ],
+  "routing": {
+    "designRequired": false,
+    "reason": "No new visual language is introduced: the page composes existing primitives the harness already pins down (command header, dashed text-list rows, raised block, `# comment` links, sans body text, shell-speaking empty state) with no new tokens, components or images. The deliverable is harness text, which is itself the design-system document; a design pass would produce mocks for code that does not exist on this branch. Route to design only if the person rejects D003's row idiom and wants a different look explored."
+  },
+  "validation": [
+    { "id": "V001", "description": "Harness names the page command on at least two surfaces (proves T001 AC-T001-1).", "command": "test \"$(grep -c 'cat recommendations/\\*.md' AGENTS.md)\" -ge 2" },
+    { "id": "V002", "description": "The unthemed-route omission is resolved and the rest of the omissions list survives (proves T001 AC-T001-4).", "command": "! grep -q 'not yet themed' AGENTS.md && grep -q 'OG image still old-theme' AGENTS.md && grep -q 'Nothing else should be added without a fight' AGENTS.md" },
+    { "id": "V003", "description": "Data file is documented in both harness and README with one vocabulary (proves T001 AC-T001-2, T002 AC-T002-1, AC-T002-3, AC-T001-5).", "command": "grep -q 'recommendations-data.ts' AGENTS.md && test \"$(grep -c 'recommendations-data.ts' README.md)\" -eq 1 && ! grep -q '/testimonials' AGENTS.md README.md" },
+    { "id": "V004", "description": "No hex colors, neutral-* classes or rounded corners were introduced outside the pre-existing token block (proves T001 AC-T001-6).", "command": "! git diff main -- AGENTS.md README.md | grep '^+' | grep -v '^+++' | grep -Eq 'neutral-|rounded-|#[0-9a-fA-F]{6}'" },
+    { "id": "V005", "description": "Only the two planned files change; token block and rules list untouched (proves AC-T001-7, AC-T002-4).", "command": "test \"$(git diff --name-only main -- . ':!specs' | sort | tr '\\n' ' ')\" = 'AGENTS.md README.md ' && ! git diff main -- AGENTS.md | grep -E '^[-+]\\s*--(background|foreground|accent|border|positive|negative)'" },
+    { "id": "V006", "description": "Features bullet present in README (proves T002 AC-T002-2).", "command": "test \"$(grep -c 'cat recommendations' README.md)\" -eq 1" }
+  ],
+  "nextAction": "Hold for reviewed handoff: person confirms D001 (harness-only scope) and D002 (`/recommendations` naming) or redirects, then chooses the server-owned route (implement)."
+}
