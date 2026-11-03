@@ -55,20 +55,14 @@
       "id": "D006",
       "summary": "No ADR is authored: the repository has no docs/adr directory or accepted ADRs, only an unused `.specify/templates/adr-template.md`; AGENTS.md itself is where design decisions are recorded.",
       "evidence": [".specify/templates (templates only, no constitution or ADRs)"]
-    }
-  ],
-  "openQuestions": [
-    {
-      "id": "Q001",
-      "question": "Confirm the interpretation in D001: the deliverable is the harness pattern (AGENTS.md + README), because this branch has no application code. If you instead want the full Next.js reference implementation generated with a testimonials page, that is a separate, much larger request requiring identity data (name, handle, bio, links, palette) and should be started as its own feature.",
-      "blocking": false
     },
     {
-      "id": "Q002",
-      "question": "D002 keeps the route name `/recommendations` for continuity with the harness and the reference site. Say so at handoff if you prefer `/testimonials` everywhere instead; the plan then applies with the word swapped (route, nav label, data file, type, command header).",
-      "blocking": false
+      "id": "D007",
+      "summary": "Reviewer confirmed the plan with the message \"RUN\" at the reviewed-handoff hold (loop 1, attempt ss_spec_002-rocket-101_1793715275865_5). This resolves the former open questions Q001 (harness-only scope per D001) and Q002 (`/recommendations` naming per D002) as accepted; no redirect to `/testimonials` or to generating the app was requested. Route remains implement with no design pass.",
+      "evidence": ["Reviewer message \"RUN\" received after hold at commit 1cab7c08", "D001", "D002"]
     }
   ],
+  "openQuestions": [],
   "tasks": [
     {
       "id": "T001",
@@ -112,5 +106,5 @@
     { "id": "V005", "description": "Only the two planned files change; token block and rules list untouched (proves AC-T001-7, AC-T002-4).", "command": "test \"$(git diff --name-only 32190a991ff3 -- . ':!specs' | sort | tr '\\n' ' ')\" = 'AGENTS.md README.md ' && ! git diff 32190a991ff3 -- AGENTS.md | grep -E '^[-+]\\s*--(background|foreground|accent|border|positive|negative)'" },
     { "id": "V006", "description": "Features bullet present in README (proves T002 AC-T002-2).", "command": "test \"$(grep -c 'cat recommendations' README.md)\" -eq 1" }
   ],
-  "nextAction": "Hold for reviewed handoff: person confirms D001 (harness-only scope) and D002 (`/recommendations` naming) or redirects, then chooses the server-owned route (implement)."
+  "nextAction": "D001/D002 confirmed by reviewer (D007). Person selects the server-owned implement action in devOS; implementation executes T001 then T002 and proves them with V001–V006."
 }
