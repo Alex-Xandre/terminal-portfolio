@@ -22,7 +22,8 @@
     { "path": "AGENTS.md", "reason": "Source of truth for the design system. 'Known deliberate omissions' lists `/recommendations` as the last unthemed route; the pattern language, identity-data list, command-per-surface list, recipe and consistency invariants are the sections the new page must be added to. Its non-negotiable rules (one accent, no logos/icon grids, mono vs sans, sharp corners, dashed = text lists, reduced-motion, true claims only) fully constrain the page." },
     { "path": "README.md", "reason": "States the repo is 'harness-first' with no reference code; lists the identity-data files a user edits (table under Quick start) and the feature bullets — both must mention the new data file/page to stay consistent with AGENTS.md." },
     { "path": "prompt", "reason": "Generation prompt; step 8 'remaining pages, one per response' already covers additional routes, so no edit is needed." },
-    { "path": "CLAUDE-import.md", "reason": "Contains only `@AGENTS.md`; confirms AGENTS.md is the single file to edit (never two places)." }
+    { "path": "CLAUDE-import.md", "reason": "Contains only `@AGENTS.md`; confirms AGENTS.md is the single file to edit (never two places)." },
+    { "path": ".specify/templates/adr-template.md", "reason": "Only an unused template; no constitution, accepted or proposed ADRs exist, so no ADR is authored (D006). Diff-based validations pin the merge-base commit `32190a991ff3` because `main` is not a resolvable ref in the pod." }
   ],
   "decisions": [
     {
@@ -107,8 +108,8 @@
     { "id": "V001", "description": "Harness names the page command on at least two surfaces (proves T001 AC-T001-1).", "command": "test \"$(grep -c 'cat recommendations/\\*.md' AGENTS.md)\" -ge 2" },
     { "id": "V002", "description": "The unthemed-route omission is resolved and the rest of the omissions list survives (proves T001 AC-T001-4).", "command": "! grep -q 'not yet themed' AGENTS.md && grep -q 'OG image still old-theme' AGENTS.md && grep -q 'Nothing else should be added without a fight' AGENTS.md" },
     { "id": "V003", "description": "Data file is documented in both harness and README with one vocabulary (proves T001 AC-T001-2, T002 AC-T002-1, AC-T002-3, AC-T001-5).", "command": "grep -q 'recommendations-data.ts' AGENTS.md && test \"$(grep -c 'recommendations-data.ts' README.md)\" -eq 1 && ! grep -q '/testimonials' AGENTS.md README.md" },
-    { "id": "V004", "description": "No hex colors, neutral-* classes or rounded corners were introduced outside the pre-existing token block (proves T001 AC-T001-6).", "command": "! git diff main -- AGENTS.md README.md | grep '^+' | grep -v '^+++' | grep -Eq 'neutral-|rounded-|#[0-9a-fA-F]{6}'" },
-    { "id": "V005", "description": "Only the two planned files change; token block and rules list untouched (proves AC-T001-7, AC-T002-4).", "command": "test \"$(git diff --name-only main -- . ':!specs' | sort | tr '\\n' ' ')\" = 'AGENTS.md README.md ' && ! git diff main -- AGENTS.md | grep -E '^[-+]\\s*--(background|foreground|accent|border|positive|negative)'" },
+    { "id": "V004", "description": "No hex colors, neutral-* classes or rounded corners were introduced outside the pre-existing token block (proves T001 AC-T001-6).", "command": "! git diff 32190a991ff3 -- AGENTS.md README.md | grep '^+' | grep -v '^+++' | grep -Eq 'neutral-|rounded-|#[0-9a-fA-F]{6}'" },
+    { "id": "V005", "description": "Only the two planned files change; token block and rules list untouched (proves AC-T001-7, AC-T002-4).", "command": "test \"$(git diff --name-only 32190a991ff3 -- . ':!specs' | sort | tr '\\n' ' ')\" = 'AGENTS.md README.md ' && ! git diff 32190a991ff3 -- AGENTS.md | grep -E '^[-+]\\s*--(background|foreground|accent|border|positive|negative)'" },
     { "id": "V006", "description": "Features bullet present in README (proves T002 AC-T002-2).", "command": "test \"$(grep -c 'cat recommendations' README.md)\" -eq 1" }
   ],
   "nextAction": "Hold for reviewed handoff: person confirms D001 (harness-only scope) and D002 (`/recommendations` naming) or redirects, then chooses the server-owned route (implement)."
