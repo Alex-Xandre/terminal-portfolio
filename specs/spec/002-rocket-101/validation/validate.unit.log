@@ -20,3 +20,10 @@ Unit surface: git ls-files outside specs/ = AGENTS.md, CLAUDE-import.md, README.
 Informational (not a unit check) — validation/check.sh (plan V001–V006 + finer AC checks):
   run 1: 79 PASS, summary RED, no FAIL line captured (output piped through tail); runs 2–4: 0 FAIL, exit 0 GREEN.
 baseline show: merge-base 32190a991ff3 — 0 gate baselines
+--- attempt ss_spec_002-rocket-101_1793770112727_e (run a6424dc2, loop 1, rev 9279205) ---
+design.md sha256 cb9642025d1f... verified against binding.
+No devos.env.yaml anywhere in repo; tracked non-spec files: AGENTS.md CLAUDE-import.md README.md prompt.
+6427cbf..9279205 changes only validation/validate.unit.*; no unit runner exists. gate-runner.sh not invoked.
+Plan validations (informational): V001 PASS V002 PASS V003 PASS V004 PASS V005 PASS V006 PASS
+baseline: merge-base 32190a991ff3, 0 recorded failures.
+verdict: na
