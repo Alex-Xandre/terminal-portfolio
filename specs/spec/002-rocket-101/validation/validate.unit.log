@@ -11,3 +11,12 @@ PASS V004
 PASS V005
 PASS V006
 baseline show: merge-base 32190a991ff3 — 0 gate baselines
+
+validate.unit — run a6424dc2-c60f-404a-a6fa-c85c1bc040ec, loop 1, attempt ss_spec_002-rocket-101_1793770022150_d, revision 6427cbf9b88d15a084c1d85b008e68249a39788a
+design.md sha256 cb9642025d1fa427d8e507932f5dc6cb28a354778e11d3801df741ec6081e8b3 (matches bound task_plan)
+devos.env.yaml: absent anywhere in repo (no checks.unit recipe)
+Unit surface: git ls-files outside specs/ = AGENTS.md, CLAUDE-import.md, README.md, prompt;
+  no package.json/lockfile, src/, tests or CI. No normal unit recipe exists to declare; gate-runner.sh not invoked.
+Informational (not a unit check) — validation/check.sh (plan V001–V006 + finer AC checks):
+  run 1: 79 PASS, summary RED, no FAIL line captured (output piped through tail); runs 2–4: 0 FAIL, exit 0 GREEN.
+baseline show: merge-base 32190a991ff3 — 0 gate baselines

@@ -1,14 +1,34 @@
 {
   "id": "validate.unit",
-  "stageRunId": "ss_spec_002-rocket-101_1793769949598_c",
+  "stageRunId": "ss_spec_002-rocket-101_1793770022150_d",
   "runId": "a6424dc2-c60f-404a-a6fa-c85c1bc040ec",
   "loop": 1,
-  "revision": "8a1c8bacd85869aebf5eb4b371b786d610b3a23c",
+  "revision": "6427cbf9b88d15a084c1d85b008e68249a39788a",
   "verdict": "na",
-  "reason": "Docs-only repository: no package.json, source, tests or CI; no devos.env.yaml checks.unit recipe and no unit runner to declare. Plan tasks T001/T002 change only AGENTS.md and README.md.",
+  "reason": "Docs-only repository: tracked files outside specs/ are AGENTS.md, CLAUDE-import.md, README.md, prompt; no package.json, source, tests, CI or devos.env.yaml checks.unit, so no unit runner exists to run or declare. Plan tasks T001/T002 change only AGENTS.md and README.md (V005).",
   "command": null,
   "failures": [],
-  "baseline": {"mergeBase": "32190a991ff3", "recordedFailures": 0},
-  "informational": {"planValidations": {"V001":"pass","V002":"pass","V003":"pass","V004":"pass","V005":"pass","V006":"pass"}},
-  "log": "specs/spec/002-rocket-101/validation/validate.unit.log"
+  "baseline": {
+    "mergeBase": "32190a991ff3",
+    "recordedFailures": 0
+  },
+  "informational": {
+    "planValidations": {
+      "V001": "pass",
+      "V002": "pass",
+      "V003": "pass",
+      "V004": "pass",
+      "V005": "pass",
+      "V006": "pass"
+    },
+    "checkSh": "runs 2-4 GREEN exit 0; run 1 reported RED with no FAIL line (unreproduced)"
+  },
+  "log": "specs/spec/002-rocket-101/validation/validate.unit.log",
+  "history": [
+    {
+      "stageRunId": "ss_spec_002-rocket-101_1793769949598_c",
+      "revision": "8a1c8bacd85869aebf5eb4b371b786d610b3a23c",
+      "verdict": "na"
+    }
+  ]
 }
