@@ -1,0 +1,90 @@
+{
+  "id": "validate.diff",
+  "stageRunId": "ss_spec_002-rocket-101_1793769578744_9",
+  "loop": 1,
+  "verdict": "pass",
+  "passesAtBase": [],
+  "removedExports": [],
+  "uncheckedClaims": [],
+  "skipped": [],
+  "redAtBaseRuns": [],
+  "remediationExempt": [],
+  "taskEvidence": [
+    {
+      "task": "T001",
+      "kind": "cited",
+      "evidence": "specs/spec/002-rocket-101/validation/implementation-traceability.md"
+    },
+    {
+      "task": "T002",
+      "kind": "cited",
+      "evidence": "specs/spec/002-rocket-101/validation/implementation-traceability.md"
+    }
+  ],
+  "envGaps": [],
+  "durationMs": 2147,
+  "evidence": {
+    "version": 1,
+    "kind": "findings",
+    "completeness": "complete",
+    "reasons": [],
+    "records": []
+  },
+  "binding": {
+    "comparison": {
+      "contract": "devos.check-evidence/v1",
+      "repository": "a1e7244e-4608-4112-83f9-900bdc4ac512",
+      "checkId": "diff",
+      "checkContract": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "selection": [],
+      "identityAdapter": "devos-json/v1",
+      "command": "diff-gate.sh",
+      "setup": [],
+      "toolchain": {},
+      "preparation": "b3643d068aa44cd461f262996869a18c49399a19e6e8267ee780b3f8b93bc448",
+      "environment": "02019920a3da419e0df1aa57c76f12b4595ecf543c86399390b71b369e9d1757"
+    },
+    "revision": "7e6a691340a2e30124dd87ee01e5a896e7ff6975",
+    "run": "ss_spec_002-rocket-101_1793769578744_9",
+    "attempt": 1,
+    "reportDigests": [
+      "824381ff8b8fe47df287bd06db4cf2509201a4f17b12148ab8f026fecc72ec31"
+    ],
+    "execution": {
+      "exitCode": 0,
+      "finished": true
+    }
+  },
+  "baseEvidence": {
+    "version": 1,
+    "kind": "findings",
+    "completeness": "complete",
+    "reasons": [],
+    "records": []
+  },
+  "baseBinding": {
+    "comparison": {
+      "contract": "devos.check-evidence/v1",
+      "repository": "a1e7244e-4608-4112-83f9-900bdc4ac512",
+      "checkId": "diff",
+      "checkContract": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "selection": [],
+      "identityAdapter": "devos-json/v1",
+      "command": "diff-gate.sh",
+      "setup": [],
+      "toolchain": {},
+      "preparation": "b3643d068aa44cd461f262996869a18c49399a19e6e8267ee780b3f8b93bc448",
+      "environment": "02019920a3da419e0df1aa57c76f12b4595ecf543c86399390b71b369e9d1757"
+    },
+    "revision": "32190a991ff3d064d493f28a43e6451cf062578a",
+    "run": "ss_spec_002-rocket-101_1793769578744_9",
+    "attempt": 1,
+    "reportDigests": [
+      "824381ff8b8fe47df287bd06db4cf2509201a4f17b12148ab8f026fecc72ec31"
+    ],
+    "execution": {
+      "exitCode": 0,
+      "finished": true
+    }
+  }
+}

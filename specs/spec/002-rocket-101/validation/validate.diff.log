@@ -1,0 +1,5 @@
+[diff-gate] merge base: 32190a991ff3d064d493f28a43e6451cf062578a (origin/main)
+[diff-gate] setup: no declared checks.unit.setup / checks.typecheck.setup — assuming dependencies are already installed
+[diff-gate] acceptance-crosscheck: T001 — cited by specs/spec/002-rocket-101/validation/implementation-traceability.md
+[diff-gate] acceptance-crosscheck: T002 — cited by specs/spec/002-rocket-101/validation/implementation-traceability.md
+[diff-gate] verdict: pass — pass: no red-at-base failures, no removed exports, no unchecked claims (2147ms)
