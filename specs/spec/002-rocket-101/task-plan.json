@@ -22,8 +22,7 @@
     { "path": "AGENTS.md", "reason": "Source of truth for the design system. 'Known deliberate omissions' lists `/recommendations` as the last unthemed route; the pattern language, identity-data list, command-per-surface list, recipe and consistency invariants are the sections the new page must be added to. Its non-negotiable rules (one accent, no logos/icon grids, mono vs sans, sharp corners, dashed = text lists, reduced-motion, true claims only) fully constrain the page." },
     { "path": "README.md", "reason": "States the repo is 'harness-first' with no reference code; lists the identity-data files a user edits (table under Quick start) and the feature bullets — both must mention the new data file/page to stay consistent with AGENTS.md." },
     { "path": "prompt", "reason": "Generation prompt; step 8 'remaining pages, one per response' already covers additional routes, so no edit is needed." },
-    { "path": "CLAUDE-import.md", "reason": "Contains only `@AGENTS.md`; confirms AGENTS.md is the single file to edit (never two places)." },
-    { "path": ".specify/templates/adr-template.md", "reason": "Only an unused template; no constitution, accepted or proposed ADRs exist, so no ADR is authored (D006). Diff-based validations pin the merge-base commit `32190a991ff3` because `main` is not a resolvable ref in the pod." }
+    { "path": "CLAUDE-import.md", "reason": "Contains only `@AGENTS.md`; confirms AGENTS.md is the single file to edit (never two places)." }
   ],
   "decisions": [
     {
@@ -53,13 +52,23 @@
     },
     {
       "id": "D006",
-      "summary": "No ADR is authored: the repository has no docs/adr directory or accepted ADRs, only an unused `.specify/templates/adr-template.md`; AGENTS.md itself is where design decisions are recorded.",
-      "evidence": [".specify/templates (templates only, no constitution or ADRs)"]
+      "summary": "No ADR is authored: the repository tracks no docs/adr directory, constitution, or accepted/proposed ADRs; AGENTS.md itself is where design decisions are recorded. The `.specify/templates/*` and `.claude/skills/design/*` files visible in the pod are untracked, pod-provisioned paths listed in `.git/info/exclude` — not repository governance — so they are not cited as codebaseEvidence paths.",
+      "evidence": ["git ls-files (5 tracked files: AGENTS.md, CLAUDE-import.md, README.md, prompt, this artifact)", "git check-ignore -v .specify/templates/adr-template.md → .git/info/exclude"]
     },
     {
       "id": "D007",
       "summary": "Reviewer confirmed the plan with the message \"RUN\" at the reviewed-handoff hold (loop 1, attempt ss_spec_002-rocket-101_1793715275865_5). This resolves the former open questions Q001 (harness-only scope per D001) and Q002 (`/recommendations` naming per D002) as accepted; no redirect to `/testimonials` or to generating the app was requested. Route remains implement with no design pass.",
       "evidence": ["Reviewer message \"RUN\" received after hold at commit 1cab7c08", "D001", "D002"]
+    },
+    {
+      "id": "D008",
+      "summary": "Diff-based validations V004/V005 pin the merge-base commit `32190a991ff3` (harness v1.1) instead of `main` because `main`/`origin/main` are not resolvable refs in the pod; `baseline show` reports the same merge-base with zero recorded gate failures, so no pre-existing failure is excluded.",
+      "evidence": ["git cat-file -t 32190a991ff3 → commit", "baseline show → merge-base 32190a991ff3 — 0 gate baseline(s)"]
+    },
+    {
+      "id": "D009",
+      "summary": "Run a6424dc2 (loop 1, attempt ss_spec_002-rocket-101_1793762121390_0) resumed from the ready artifact at head fc6154d rather than replanning. No design brief was delivered (`.devos/run-inputs/design_brief.json` absent). Re-verified against the tree: the omission line (`AGENTS.md:345`), the OG-image and 'without a fight' lines (346, 348), and the README `timeline-data.ts` table row (69) still exist unchanged; every V001–V006 command parses, and V001/V002/V003/V005/V006 fail only because T001/T002 are unimplemented while V004 passes on the empty diff. Scope, tasks, routing and acceptance criteria are unchanged; the only artifact edits are removing an untracked path from codebaseEvidence (folded into D006) and recording D008/D009.",
+      "evidence": ["grep -n over AGENTS.md and README.md at fc6154d", "dry run of V001–V006 at fc6154d", "D006", "D007"]
     }
   ],
   "openQuestions": [],
@@ -106,5 +115,5 @@
     { "id": "V005", "description": "Only the two planned files change; token block and rules list untouched (proves AC-T001-7, AC-T002-4).", "command": "test \"$(git diff --name-only 32190a991ff3 -- . ':!specs' | sort | tr '\\n' ' ')\" = 'AGENTS.md README.md ' && ! git diff 32190a991ff3 -- AGENTS.md | grep -E '^[-+]\\s*--(background|foreground|accent|border|positive|negative)'" },
     { "id": "V006", "description": "Features bullet present in README (proves T002 AC-T002-2).", "command": "test \"$(grep -c 'cat recommendations' README.md)\" -eq 1" }
   ],
-  "nextAction": "D001/D002 confirmed by reviewer (D007). Person selects the server-owned implement action in devOS; implementation executes T001 then T002 and proves them with V001–V006."
+  "nextAction": "Plan re-verified at head fc6154d (D009); D001/D002 remain reviewer-confirmed (D007). Person selects the server-owned implement action in devOS; implementation executes T001 then T002 and proves them with V001–V006."
 }
