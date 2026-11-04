@@ -149,8 +149,15 @@ identity:
   in the page's `MILESTONES` set.
 - `(features)/trading/trading-data.ts` — optional page; delete the route
   if the user isn't a trader, and remove the nav item.
+- `(features)/recommendations/recommendations-data.ts` — exports
+  `Recommendation[]`: `{ name, role, company?, quote, date?: "yyyy-mm",
+  source?: { label, url } }`, newest first. Entries must be real, quoted
+  verbatim, and published with the author's permission; `source` points
+  to where the recommendation is publicly visible when one exists. The
+  page derives `slug = slugify(name)`, so names must be unique in the file.
 - `lib/posts.ts` + markdown files — blog.
-- Appbar `SIDEBAR_MENU` — nav items.
+- Appbar `SIDEBAR_MENU` — nav items; `recommendations` is the last item,
+  after `trading`.
 - Ticker `STATS` array — must contain only TRUE claims; numbers here must
   agree with numbers elsewhere on the site (see Consistency).
 - Layout metadata block — titles, OG, icons, themeColor.
@@ -186,7 +193,8 @@ Commands per surface: hero `whoami --verbose` (typed animation); projects
 `ls projects/ --featured` / `ls projects/ [flags]` (LIVE: active filters
 appear as flags in the command); blog `ls blog/ [--tag]`; post
 `cat {slug}.md`; stacks `npm ls {name} --depth=1`; experience
-`git log --career`; trading `./trading --status`; contact/CTA
+`git log --career`; trading `./trading --status`;
+recommendations `cat recommendations/*.md`; contact/CTA
 `./contact --no-pitch`. Vary the header commands; they describe content.
 
 ### Navigation-away links (uniform)
@@ -263,6 +271,62 @@ before:content in accent-muted; inline code = amber chips on raised bg;
 pre = raised bg + `border-l-2 border-l-accent-muted`; dashed hr; amber
 links/blockquotes; GFM tables as bordered mono grids.
 
+### Recommendations = cat quotes
+Command header `cat recommendations/*.md` (the content is prose, like a
+post; the glob says "all of them, in order"). Subtitle, exactly:
+`{n} files · quoted verbatim, with permission · newest first`
+(`1 file` when singular, `0 files` when empty). List is
+`<ol aria-label="recommendations">` newest first, `mt-8 flex flex-col
+gap-3`; one `<article>` per entry. Page uses the canonical Container.
+- Block: `border border-dashed border-border bg-secondary-background p-4
+  sm:p-5 transition-colors hover:border-secondary-border`. Dashed because
+  this is a text list (solid = projects). On hover only the border changes
+  to `secondary-border` — no translate; the block is not a link.
+- Header line, `flex items-baseline justify-between gap-3 text-xs`:
+  `{slug}.md` left — slug in `text-text-primary`, `.md` in
+  `text-text-secondary`, `min-w-0 truncate` (the slug truncates on narrow
+  screens); `<time datetime="yyyy-mm">` right in `text-text-secondary
+  flex-none` (the date never wraps). ONE row at every width. Mirrors the
+  blog's `slug.md` listing and the project row's trailing `type · year`.
+- Quote: `<blockquote>` with `mt-3 max-w-prose font-sans text-[15px]
+  leading-relaxed text-text-primary` and the markdown `pre` rule
+  `border-l-2 border-l-accent-muted pl-3` as the only quote mark;
+  paragraphs separated by `mt-2`. The quote is never truncated, never
+  clamped — no "read more".
+- Footer, `mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs`:
+  `— {name}` in `text-text-primary`, then `{role} @ {company}` (or
+  `{role}` alone) in `text-text-secondary`. Attribution sits BELOW the
+  quote as a sign-off; the filename line above keeps the `cat` framing.
+- Source link (optional, last footer item): `# via {label} ↗` — `#` in
+  `text-accent-muted`, link `text-accent-muted hover:text-accent`
+  (accent-muted → accent), `basis-full sm:basis-auto sm:ml-auto` —
+  right-aligned on sm+, its own line below the attribution on mobile.
+  `target="_blank" rel="noopener noreferrer"`,
+  `aria-label="recommendation from {name} on {label} (opens in a new tab)"`,
+  `focus-visible:outline-accent` (focus ring = accent token). Omitted
+  entirely when `source` is absent — no placeholder. `↗` is text, not an
+  icon.
+- Casing & data: `name` and `company` render as written (rule 10's
+  lowercase is for terminal chrome, not people); `role` is lowercase.
+  `date` is printed from the stored `"yyyy-mm"` string as-is — no `Date`
+  object exists on this page, so the `Date.toString()` bug class cannot
+  occur. `slug = slugify(name)`, unique per file.
+- Mobile (< 640px): header line stays one row (slug truncates, date
+  `flex-none`); footer wraps to `— name` / `role @ company` / `# via …` on
+  successive lines. Nothing stacks into columns; nothing hides.
+- Empty state: `cat: recommendations/*.md: No such file or directory` in
+  `text-sm text-text-secondary`, followed by a `cd ~ →` link in
+  `text-accent-muted hover:text-accent`. Subtitle reads `0 files`.
+- What the page does NOT have: no headshots, no logos, no ratings, no
+  carousels, no autoplay, no truncation, no count badge, no CTA, no
+  trailing `cd` link (the footer follows), no per-entry link other than
+  the source.
+- Motion: only the Container fade-up and the 150ms border/color
+  transition — both zeroed by the global reduced-motion block; the
+  reduced-motion render is identical in content.
+- Palette-agnostic: every color above is a token; no palette-specific
+  rule (verified against the green-phosphor block).
+
 ### Signature gag: footer cat
 `components/footer-cat.tsx` patrols above the bottom bar using
 `public/oneko.gif` (MIT, adryd325/oneko.js sprite): 32px sprite, two-frame
@@ -282,7 +346,9 @@ cards, bottom-aligned on mobile so the keyboard doesn't cover it.
 
 Input has ghost-text tab completion, arrow-key history, and a caret
 rendered inside the ghost span so it trails the typed text. Commands that
-name a section print output, then `router.push` after ~450ms.
+name a section print output, then `router.push` after ~450ms;
+`recommendations` is one of them — it prints the `{slug}.md` file list,
+then navigates to `/recommendations`.
 `theme <amber|green|blue>` applies a palette from `lib/palettes.ts` by
 setting CSS custom properties on `:root` — ephemeral, no persistence, and
 NO visible theme toggle (see rule 5).
@@ -325,7 +391,8 @@ from SIDEBAR_MENU, `cd ~` plus an "open a shell" button, and
    (Appbar + scroll region + footer).
 4. Appbar: status dot + `{handle}` + lowercase text nav (breakpoint `lg`,
    burger below; row is flex-nowrap whitespace-nowrap — mono navs overflow
-   early), mobile panel with `>` prefixes, Ticker last child of header.
+   early), mobile panel with `>` prefixes, `recommendations` as the last
+   nav item after `trading`, Ticker last child of header.
 5. Hero: typed `whoami --verbose` (type in useEffect from empty string —
    hydration-safe; reduced motion = instant), glow headline (short,
    declarative, user's own words), sans bio, status line with positive
@@ -334,7 +401,8 @@ from SIDEBAR_MENU, `cd ~` plus an "open a shell" button, and
 6. Homepage: Hero → project rows → blog cat-list → stack chips
    (`npm ls --depth=0`, `├──`-prefixed bordered chips) → CTA. No stats
    grid, no "now" section (ticker covers it).
-7. Pages per the pattern language above. Detail pages get window chrome.
+7. Pages per the pattern language above, including `/recommendations`
+   (= cat quotes). Detail pages get window chrome.
 8. Footer + cat.
 9. Run the consistency invariants. Delete every unused component the old
    design left behind (Title, theme toggle/provider, world map, dotted
@@ -342,7 +410,6 @@ from SIDEBAR_MENU, `cd ~` plus an "open a shell" button, and
 
 ## Known deliberate omissions
 
-- `/recommendations` not yet themed (last `Title` + `neutral-` user).
 - OG image still old-theme (a photo); regenerate to match if desired —
   deliberately deprioritized.
 - Nothing else should be added without a fight.
