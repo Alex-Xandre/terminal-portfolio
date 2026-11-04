@@ -69,9 +69,21 @@
       "id": "D009",
       "summary": "Run a6424dc2 (loop 1, attempt ss_spec_002-rocket-101_1793762121390_0) resumed from the ready artifact at head fc6154d rather than replanning. No design brief was delivered (`.devos/run-inputs/design_brief.json` absent). Re-verified against the tree: the omission line (`AGENTS.md:345`), the OG-image and 'without a fight' lines (346, 348), and the README `timeline-data.ts` table row (69) still exist unchanged; every V001–V006 command parses, and V001/V002/V003/V005/V006 fail only because T001/T002 are unimplemented while V004 passes on the empty diff. Scope, tasks, routing and acceptance criteria are unchanged; the only artifact edits are removing an untracked path from codebaseEvidence (folded into D006) and recording D008/D009.",
       "evidence": ["grep -n over AGENTS.md and README.md at fc6154d", "dry run of V001–V006 at fc6154d", "D006", "D007"]
+    },
+    {
+      "id": "D010",
+      "summary": "Reviewer replied \"RUN DEsign\" at the reviewed-handoff hold of this attempt (loop 1, attempt ss_spec_002-rocket-101_1793762121390_0, commit 9e249f3). Routing changes to design: the page's visual idiom is to be explored by a design pass rather than fixed by D003. D003 is downgraded from a decision to the planner's candidate proposal that design may adopt, amend or replace; D001 (harness-only scope), D002 (`/recommendations` naming), D004 (truthfulness) and D005 (no homepage section / no ticker stat) stand unless the approved design brief amends them. T001's row-format details (dashed block, attribution line, `# via` source link, empty-state text) and AC-T001-3 will be re-derived from the brief's screens/decisions when planning resumes with the brief; tasks are kept so the implement scope stays visible.",
+      "evidence": ["Reviewer message \"RUN DEsign\" received after hold at commit 9e249f3", "D003", "Q003"]
     }
   ],
-  "openQuestions": [],
+  "openQuestions": [
+    {
+      "id": "Q003",
+      "question": "What should a recommendation entry look like on the `/recommendations` page within the harness's constraints (one accent, no headshots/logos/ratings, mono chrome + sans quote, sharp corners, dashed text-list borders, reduced-motion static)? Candidate per D003: command header `cat recommendations/*.md`, one dashed raised block per entry with a mono attribution line and hand-built `yyyy-mm` date, the quote in sans, optional `# via {label}` source link, shell-speaking empty state. Design decides the row anatomy, attribution/date placement, source-link treatment, mobile stacking and empty state; the brief's screen and decision ids become T001's acceptance criteria.",
+      "blocking": true,
+      "deferredTo": "design"
+    }
+  ],
   "tasks": [
     {
       "id": "T001",
@@ -104,8 +116,8 @@
     }
   ],
   "routing": {
-    "designRequired": false,
-    "reason": "No new visual language is introduced: the page composes existing primitives the harness already pins down (command header, dashed text-list rows, raised block, `# comment` links, sans body text, shell-speaking empty state) with no new tokens, components or images. The deliverable is harness text, which is itself the design-system document; a design pass would produce mocks for code that does not exist on this branch. Route to design only if the person rejects D003's row idiom and wants a different look explored."
+    "designRequired": true,
+    "reason": "Reviewer requested a design pass (D010). The new design question is Q003: the anatomy of a recommendation entry on `/recommendations` — row layout, attribution and date placement, source-link treatment, mobile stacking and empty state — within the harness's fixed constraints (tokens, rules 1–10, dashed text-list borders, mono/sans split, reduced-motion). The planner's D003 proposal is the candidate to evaluate, not a settled decision. Design does not reopen scope (D001: harness text only, no app code), naming (D002) or the no-homepage-section rule (D005). Once the approved brief returns, T001/AC-T001-3 are re-derived from its screen and decision ids and the plan is re-held for the implement handoff."
   },
   "validation": [
     { "id": "V001", "description": "Harness names the page command on at least two surfaces (proves T001 AC-T001-1).", "command": "test \"$(grep -c 'cat recommendations/\\*.md' AGENTS.md)\" -ge 2" },
@@ -115,5 +127,5 @@
     { "id": "V005", "description": "Only the two planned files change; token block and rules list untouched (proves AC-T001-7, AC-T002-4).", "command": "test \"$(git diff --name-only 32190a991ff3 -- . ':!specs' | sort | tr '\\n' ' ')\" = 'AGENTS.md README.md ' && ! git diff 32190a991ff3 -- AGENTS.md | grep -E '^[-+]\\s*--(background|foreground|accent|border|positive|negative)'" },
     { "id": "V006", "description": "Features bullet present in README (proves T002 AC-T002-2).", "command": "test \"$(grep -c 'cat recommendations' README.md)\" -eq 1" }
   ],
-  "nextAction": "Plan re-verified at head fc6154d (D009); D001/D002 remain reviewer-confirmed (D007). Person selects the server-owned implement action in devOS; implementation executes T001 then T002 and proves them with V001–V006."
+  "nextAction": "Reviewer chose design (D010). Person selects the server-owned design action in devOS; design answers Q003 and returns an approved brief. Planning then resumes from this artifact plus the brief: re-derive T001's row-format details and AC-T001-3 from the brief's screen/decision ids, keep T002 and V001–V006 unless the brief renames the command or data file, and re-hold for the implement handoff."
 }
