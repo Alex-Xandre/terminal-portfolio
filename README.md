@@ -49,6 +49,8 @@ generation recipe at the bottom of the harness, in order.
 - Stack as an `npm ls` dependency tree with `# comment` annotations
 - Blog with `slug.md` listings and markdown that renders its own `##`
   syntax
+- Recommendations as `cat recommendations/*.md` — dashed quote blocks,
+  `{slug}.md` + date header, attribution in mono, no headshots
 - One accent color, sharp corners, IBM Plex Mono/Sans, CRT scanlines
   (behind content, where they belong)
 - A cat. (oneko sprite, patrols the footer, sits at the edges. One cat
@@ -67,6 +69,7 @@ generation recipe at the bottom of the harness, in order.
 | `src/app/(features)/projects/project-data.ts` | Projects |
 | `src/app/(features)/stacks/stacks-data.ts` | Stack tree (notes ≤ ~20 chars) |
 | `src/app/(features)/experiences/timeline-data.ts` | Career entries (`endYear: null` = current role) |
+| `src/app/(features)/recommendations/recommendations-data.ts` | Recommendations (testimonials — real, verbatim quotes) |
 | `content/posts/*.md` | Blog posts |
 | `src/app/layout.tsx` | Metadata, OG image |
 | Appbar `SIDEBAR_MENU` + Ticker `STATS` | Nav items, your true numbers |
