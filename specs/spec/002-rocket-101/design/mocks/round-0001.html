@@ -1,0 +1,223 @@
+<!doctype html>
+<!--
+  Design mock — round 0001 — /recommendations
+  Static rendering of the proposed "Recommendations = cat quotes" pattern for the
+  terminal-portfolio harness (AGENTS.md). This is NOT the application: the branch
+  ships no app code. Every color is the harness's amber token block; the green
+  variant (?theme=green) is the harness's green-phosphor preset. Entries are
+  fictional fixtures for the review only — the harness requires real, verbatim,
+  permissioned quotes in recommendations-data.ts (D004).
+  Query flags: ?empty=1 (empty state) · ?theme=green (palette swap)
+-->
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0d0b07" />
+<title>testuser@sh:~ $ cat recommendations/*.md</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ---- token block: AGENTS.md › Token system (amber, default) ---- */
+  :root, .dark {
+    --background: #0d0b07;
+    --foreground: #e9e1d2;
+    --text-primary: #e9e1d2;
+    --text-secondary: #8f8574;
+    --border: #2b2317;
+    --secondary-background: #151109;
+    --secondary-background-hover: #1c1710;
+    --secondary-border: #3a2f1e;
+    --accent: #f2a33c;
+    --accent-hover: #ffb654;
+    --accent-muted: #9a7440;
+    --positive: #5fbf77;
+    --negative: #d96a5a;
+    --glow-accent: 0 0 18px rgb(242 163 60 / 0.35);
+    --glow-positive: 0 0 8px rgb(95 191 119 / 0.6);
+    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  }
+  /* AGENTS.md › Palette presets › green phosphor (token swap only) */
+  html.theme-green {
+    --background: #070b08; --foreground: #d8e8dc;
+    --text-primary: #d8e8dc; --text-secondary: #7d9184;
+    --border: #17281c; --secondary-background: #0b120d;
+    --secondary-background-hover: #101a13; --secondary-border: #1f3a28;
+    --accent: #4ade80; --accent-hover: #6ef29e; --accent-muted: #3a7d55;
+    --positive: #4ade80; --negative: #e06c5f;
+    --glow-accent: 0 0 18px rgb(74 222 128 / 0.35);
+    --glow-positive: 0 0 8px rgb(74 222 128 / 0.6);
+  }
+
+  * { box-sizing: border-box; }
+  html { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--secondary-border); }
+  body {
+    margin: 0; background: var(--background); color: var(--foreground);
+    font-family: var(--font-mono); font-size: 14px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---- layout skeleton: scanlines behind content, fixed appbar, scroll region ---- */
+  .scanlines {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .4;
+    background: repeating-linear-gradient(to bottom, transparent 0 3px, rgb(0 0 0 / .11) 3px 4px);
+  }
+  main { position: relative; z-index: 10; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
+  .appbar { position: fixed; inset: 0 0 auto 0; z-index: 20; background: var(--background); border-bottom: 1px solid var(--border); }
+  .wrap { margin: 0 auto; width: 100%; max-width: 64rem; padding-left: 1rem; padding-right: 1rem; }
+  @media (min-width: 640px) { .wrap { padding-left: 1.5rem; padding-right: 1.5rem; } }
+  .appbar .row { display: flex; align-items: center; justify-content: space-between; height: 3.5rem; white-space: nowrap; flex-wrap: nowrap; }
+  .handle { display: inline-flex; align-items: center; gap: .5rem; font-size: 13px; color: var(--text-primary); }
+  .dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--positive); box-shadow: var(--glow-positive); }
+  .nav { display: none; gap: 1.25rem; font-size: 13px; color: var(--text-secondary); }
+  .nav a:hover, .nav a[aria-current="page"] { color: var(--accent); }
+  .nav a[aria-current="page"]::before { content: "> "; color: var(--accent-muted); }
+  .burger { display: inline-flex; color: var(--text-secondary); background: none; border: 0; font: inherit; padding: 0; }
+  @media (min-width: 1024px) { .nav { display: flex; } .burger { display: none; } }
+  .scroll { margin-top: 3.5rem; flex: 1; overflow-y: auto; }
+
+  /* ---- Container: AGENTS.md canonical page usage ---- */
+  .page { display: flex; flex-direction: column; overflow: hidden; padding-top: 3rem; padding-bottom: 3rem; min-height: calc(100dvh - 100px); }
+  @media (min-width: 768px) { .page { padding-top: 4rem; } }
+
+  /* ---- command header (copied exactly from the pattern language) ---- */
+  .cmd { margin: 0; font-size: 14px; color: var(--accent-muted); }
+  .cmd .c { color: var(--accent); }
+  .sub { margin: .375rem 0 0; font-size: 12px; color: var(--text-secondary); }
+  .fixture { margin: .375rem 0 0; font-size: 12px; color: var(--text-secondary); }
+  .fixture .h, .via .h { color: var(--accent-muted); }
+
+  /* ---- Recommendations = cat quotes (proposed pattern) ---- */
+  .list { margin-top: 2rem; display: flex; flex-direction: column; gap: .75rem; list-style: none; padding: 0; }
+  .rec {
+    border: 1px dashed var(--border); background: var(--secondary-background);
+    padding: 1rem; transition: border-color .15s ease;
+  }
+  @media (min-width: 640px) { .rec { padding: 1.25rem; } }
+  .rec:hover { border-color: var(--secondary-border); }
+  .rec header { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; font-size: 12px; }
+  .rec .file { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-primary); }
+  .rec .file .ext { color: var(--text-secondary); }
+  .rec time { flex: none; color: var(--text-secondary); }
+  .rec blockquote {
+    margin: .75rem 0 0; max-width: 65ch; padding-left: .75rem;
+    border-left: 2px solid var(--accent-muted);
+    font-family: var(--font-sans); font-size: 15px; line-height: 1.65; color: var(--text-primary);
+  }
+  .rec blockquote p { margin: 0; }
+  .rec blockquote p + p { margin-top: .6em; }
+  .rec footer { margin-top: .75rem; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .75rem; row-gap: .25rem; font-size: 12px; }
+  .rec .who { color: var(--text-primary); }
+  .rec .role { color: var(--text-secondary); }
+  .rec .via { flex-basis: 100%; color: var(--accent-muted); transition: color .15s ease; }
+  .rec .via:hover { color: var(--accent); }
+  @media (min-width: 640px) { .rec .via { flex-basis: auto; margin-left: auto; } }
+
+  /* ---- empty state (speaks shell) ---- */
+  .empty { margin: 2rem 0 0; font-size: 14px; color: var(--text-secondary); }
+  .empty .cdlink { display: block; margin-top: .75rem; color: var(--accent-muted); }
+  .empty .cdlink:hover { color: var(--accent); }
+
+  /* ---- footer bottom bar (abbreviated; the real footer pattern is unchanged) ---- */
+  .bottom { border-top: 1px solid var(--border); margin-top: 3rem; padding: 1rem 0 1.25rem; font-size: 12px; color: var(--text-secondary); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+<main>
+  <header class="appbar">
+    <div class="wrap row">
+      <a class="handle" href="#" aria-label="home"><span class="dot" aria-hidden="true"></span>testuser@sh:~</a>
+      <nav class="nav" aria-label="primary">
+        <a href="#">projects</a><a href="#">blog</a><a href="#">stack</a><a href="#">experience</a><a href="#">trading</a><a href="#" aria-current="page">recommendations</a>
+      </nav>
+      <button class="burger" aria-label="open menu" type="button">≡</button>
+    </div>
+  </header>
+
+  <div class="scroll">
+    <section class="wrap page" id="page">
+      <p class="cmd">testuser@sh:~ $ <span class="c">cat recommendations/*.md</span></p>
+      <p class="sub" id="sub">3 files · quoted verbatim, with permission · newest first</p>
+      <p class="fixture" id="fixture"><span class="h">#</span> design fixture — fictional entries; the data file must hold real quotes</p>
+
+      <ol class="list" id="list" aria-label="recommendations">
+        <li>
+          <article class="rec">
+            <header>
+              <span class="file">mara-okonkwo<span class="ext">.md</span></span>
+              <time datetime="2025-09">2025-09</time>
+            </header>
+            <blockquote>
+              <p>Hand him a service nobody wants to touch and he comes back with a smaller one that does the same job and a runbook for the on-call rota. He is the only engineer I've managed who deleted more code than he wrote in a quarter and shipped more because of it.</p>
+            </blockquote>
+            <footer>
+              <span class="who">— Mara Okonkwo</span>
+              <span class="role">engineering manager @ Lattice Grid</span>
+              <a class="via" href="https://example.com/in/mara-okonkwo" target="_blank" rel="noopener noreferrer" aria-label="recommendation from Mara Okonkwo on linkedin (opens in a new tab)"><span class="h">#</span> via linkedin ↗</a>
+            </footer>
+          </article>
+        </li>
+        <li>
+          <article class="rec">
+            <header>
+              <span class="file">devin-alcaraz<span class="ext">.md</span></span>
+              <time datetime="2024-11">2024-11</time>
+            </header>
+            <blockquote>
+              <p>We hired him for a three-month migration and kept him for two years. The migration finished early; the rest was him fixing things we hadn't noticed were slow.</p>
+            </blockquote>
+            <footer>
+              <span class="who">— Devin Alcaraz</span>
+              <span class="role">cto @ Northbeam Labs</span>
+            </footer>
+          </article>
+        </li>
+        <li>
+          <article class="rec">
+            <header>
+              <span class="file">priya-raman<span class="ext">.md</span></span>
+              <time datetime="2023-06">2023-06</time>
+            </header>
+            <blockquote>
+              <p>Clear estimates, boring deploys, and a changelog I could actually send to customers. I'd work with him again without a second quote.</p>
+            </blockquote>
+            <footer>
+              <span class="who">— Priya Raman</span>
+              <span class="role">freelance client</span>
+              <a class="via" href="https://example.com/testuser/project/issues/42" target="_blank" rel="noopener noreferrer" aria-label="recommendation from Priya Raman on github (opens in a new tab)"><span class="h">#</span> via github ↗</a>
+            </footer>
+          </article>
+        </li>
+      </ol>
+
+      <p class="empty" id="empty" hidden>cat: recommendations/*.md: No such file or directory<a class="cdlink" href="#">cd ~ →</a></p>
+    </section>
+
+    <div class="wrap bottom">process exited 0 · © 2026 test user</div>
+  </div>
+</main>
+<script>
+  // Mock-only switches; the real page has no client state.
+  var q = new URLSearchParams(location.search);
+  if (q.get("theme") === "green") document.documentElement.classList.add("theme-green");
+  if (q.get("empty") === "1") {
+    document.getElementById("list").remove();
+    document.getElementById("fixture").remove();
+    document.getElementById("sub").textContent = "0 files";
+    document.getElementById("empty").hidden = false;
+  }
+</script>
+</body>
+</html>
