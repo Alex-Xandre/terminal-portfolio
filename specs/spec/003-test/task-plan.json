@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "status": "needs_input",
+  "goal": "Convert the terminal-portfolio project from its Next.js (App Router) target to Vite — exact deliverable pending user intent (see OQ-1), because this repository currently holds only the design harness and no application code.",
+  "scope": {
+    "in": [
+      "Retarget the Next.js-specific parts of the design harness (AGENTS.md, README.md, prompt) to a Vite-based stack while preserving every design rule, token and pattern that is framework-independent",
+      "Decide and document the Vite flavour (React SPA + router, or Vike/SSG) and the replacements for Next-only mechanisms: next/font, layout metadata/viewport export, server-side GitHub fetch with 1h revalidate, app/not-found.tsx, route groups, router.push, Vercel Analytics"
+    ],
+    "out": [
+      "Changing any design rule in AGENTS.md 'Non-negotiable rules' or the token system — these are framework-agnostic and stay as-is",
+      "Generating a reference implementation UNLESS the user chooses that interpretation in OQ-1",
+      "Changing the live demo at xandremicua.vercel.app (separate repository, not tracked here)"
+    ]
+  },
+  "codebaseEvidence": [
+    {
+      "path": "README.md",
+      "reason": "Line 22–25: 'Status: harness-first … Reference implementation … coming'. Confirms there is no app code to convert; stack section (line 100) and quick-start table (lines 65–77) name Next.js App Router, src/app/layout.tsx and Vercel deploy."
+    },
+    {
+      "path": "AGENTS.md",
+      "reason": "Next.js-specific mechanisms the harness prescribes: next/font (l.80, l.161), Next viewport themeColor export (l.91), (features) route groups (l.142–150), layout.tsx server-side GitHub fetch + 1h revalidate (l.242), router.push (l.285), app/not-found.tsx (l.298), 'npm run build' invariant (l.313), tsconfig.tsbuildinfo (l.314). Everything else (tokens, pattern language, copy rules) is framework-independent."
+    },
+    {
+      "path": "prompt",
+      "reason": "Chat-generation prompt hardcodes 'Next.js App Router' (l.1, l.25) and 'app/layout.tsx' (l.9); must be retargeted alongside the harness."
+    },
+    {
+      "path": "CLAUDE-import.md",
+      "reason": "Contains only '@AGENTS.md' — AGENTS.md is the single source of truth; edits go there, never duplicated."
+    },
+    {
+      "path": ".specify/templates/adr-template.md",
+      "reason": "ADR template exists but no ADRs or constitution are present (.specify/memory absent); the framework switch is a significant decision and would be authored as a proposed ADR only if the user wants the repo to start using ADRs."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D-1",
+      "summary": "There is no package.json, src/, or any TypeScript/TSX in this repository; 'convert' can only apply to the harness documents and/or mean building a new Vite reference implementation. The plan does not assume either until OQ-1 is answered.",
+      "evidence": ["README.md", "AGENTS.md", "prompt"]
+    },
+    {
+      "id": "D-2",
+      "summary": "All framework-independent content (non-negotiable rules, token system, palette presets, pattern language, copy rules, cat gag, interactive shell) is preserved verbatim in any conversion; only the mechanism-level references (fonts, metadata, data fetching, routing, 404, build commands, deploy target) change.",
+      "evidence": ["AGENTS.md"]
+    },
+    {
+      "id": "D-3",
+      "summary": "Recommended default if the user does not care: Vite + React + TypeScript with @tailwindcss/vite, React Router (SPA), @fontsource IBM Plex Mono/Sans for fonts, import.meta.glob + react-markdown for markdown posts, client-side GitHub fetch for live ticker stats (rendered only on success), static index.html meta + theme-color, catch-all '*' route for the 404. Pending OQ-2 confirmation.",
+      "evidence": ["AGENTS.md"]
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "OQ-1",
+      "question": "This repo has no app code — only the design harness (AGENTS.md, README.md, prompt). What should 'convert to Vite' produce? (a) Retarget the harness docs so agents generate a Vite app instead of Next.js (recommended, smallest change, matches the repo's 'harness-first' status); (b) build the reference implementation now, on Vite, using the 'Test User' identity from `prompt`; or (c) both.",
+      "blocking": true
+    },
+    {
+      "id": "OQ-2",
+      "question": "Which Vite flavour? (a) Vite + React + React Router SPA (simplest; no SSR/SSG, blog pages not pre-rendered for SEO); (b) Vike (vite-plugin-ssr) with pre-rendering so the blog/OG metadata stay server-rendered like Next.js; (c) TanStack Start. Default if unanswered: (a).",
+      "blocking": true
+    },
+    {
+      "id": "OQ-3",
+      "question": "Should the README's deploy target stay Vercel (works for Vite static output) or change to a generic 'any static host' instruction?",
+      "blocking": false
+    }
+  ],
+  "tasks": [],
+  "routing": {
+    "designRequired": false,
+    "reason": "No new visual or UX design question: the design system, tokens and pattern language are unchanged. This is a build-tool/framework retarget. Routing to design would only be warranted if the user chose SSR-less SPA and wanted the blog/OG behaviour redesigned, which is not a visual question."
+  },
+  "validation": [
+    {
+      "id": "V-1",
+      "description": "No Next.js mechanism references remain in the harness after conversion (next/font, App Router, app/layout.tsx, not-found.tsx, revalidate, Next viewport export).",
+      "command": "! grep -n -iE 'next/font|app router|app/layout\\.tsx|not-found\\.tsx|revalidate|viewport export' AGENTS.md README.md prompt"
+    }
+  ],
+  "nextAction": "Wait for the person to answer OQ-1 (and OQ-2 if applicable), then author the task list for the chosen interpretation."
+}
